@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Автотекст
 // @namespace    http://tampermonkey.net/
-// @version      2.6
+// @version      2.7
 // @description  Автотекст
 // @match        https://crm.finleo.ru/crm/orders/*
 // @author       VladNevermore
@@ -339,7 +339,7 @@
         const button = document.createElement('button');
         button.className = 'tm-autofill-btn';
         button.textContent = '📝';
-        button.title = 'Автозаполнение комментария для банков';
+        button.title = 'Автозаполнение';
         button.type = 'button';
 
 
@@ -382,7 +382,6 @@
             if (selectedBank) {
                 log(`Выбран банк: ${selectedBank}`);
                 fillOfferData(selectedBank);
-                // Сбрасываем выбор и скрываем список
                 e.target.value = '';
                 select.style.display = 'none';
                 isDropdownOpen = false;
