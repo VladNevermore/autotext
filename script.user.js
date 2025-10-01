@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Автотекст
 // @namespace    http://tampermonkey.net/
-// @version      2.5
+// @version      2.6
 // @description  Автотекст
 // @match        https://crm.finleo.ru/crm/orders/*
 // @author       VladNevermore
@@ -238,10 +238,8 @@
         console.log(`[Offer Autofill] ${message}`, data || '');
     };
 
-    // Переменная для отслеживания состояния выпадающего списка
     let isDropdownOpen = false;
 
-    // Функция для правильной установки значения в React-поле (из версии 2.2)
     const setReactInputValue = (element, value) => {
         element.focus();
 
@@ -275,12 +273,11 @@
         log(`Значение установлено: ${value.substring(0, 50)}...`);
     };
 
-    // Улучшенная функция для установки значения в поле комментария
     const setCommentValue = (element, value) => {
         if (!element) return;
 
         try {
-            // Простой и эффективный метод из версии 2.2
+
             element.focus();
 
             const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
@@ -297,7 +294,7 @@
                 });
                 element.dispatchEvent(inputEvent);
 
-                // Дополнительные события для гарантии
+
                 ['change', 'blur', 'focus'].forEach(eventType => {
                     element.dispatchEvent(new Event(eventType, { bubbles: true }));
                 });
@@ -317,40 +314,40 @@
         }
     };
 
-    // Функция для создания компактной кнопки с выпадающим списком
+
     const createAutofillButton = () => {
         log('Создание компактной кнопки для автозаполнения');
 
-        // Ищем поле комментария
+
         const commentField = document.querySelector('textarea[name="comment"]');
         if (!commentField) {
             log('Поле комментария не найдено');
             return;
         }
 
-        // Удаляем существующий контейнер, если есть
+
         const existingContainer = document.querySelector('.tm-autofill-container');
         if (existingContainer) {
             existingContainer.remove();
         }
 
-        // Создаем контейнер
+
         const container = document.createElement('div');
         container.className = 'tm-autofill-container';
 
-        // Создаем компактную кнопку
+
         const button = document.createElement('button');
         button.className = 'tm-autofill-btn';
         button.textContent = '📝';
         button.title = 'Автозаполнение комментария для банков';
         button.type = 'button';
 
-        // Создаем выпадающий список (изначально скрыт)
+
         const select = document.createElement('select');
         select.className = 'tm-autofill-select';
         select.style.display = 'none';
 
-        // Добавляем опцию по умолчанию
+
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'Выберите банк...';
@@ -358,7 +355,7 @@
         defaultOption.disabled = true;
         select.appendChild(defaultOption);
 
-        // Добавляем опции для всех банков
+
         Object.keys(bankConfigs).forEach(bankName => {
             const option = document.createElement('option');
             option.value = bankName;
@@ -366,7 +363,7 @@
             select.appendChild(option);
         });
 
-        // Обработчик клика по кнопке - показываем/скрываем список
+
         button.addEventListener('click', (e) => {
             e.stopPropagation();
             if (isDropdownOpen) {
@@ -379,7 +376,7 @@
             }
         });
 
-        // Обработчик изменения выбора в списке
+
         select.addEventListener('change', (e) => {
             const selectedBank = e.target.value;
             if (selectedBank) {
@@ -392,7 +389,7 @@
             }
         });
 
-        // Скрываем список при клике вне его
+
         document.addEventListener('click', (e) => {
             if (!container.contains(e.target) && isDropdownOpen) {
                 select.style.display = 'none';
@@ -400,7 +397,7 @@
             }
         });
 
-        // Скрываем список при нажатии Escape
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && isDropdownOpen) {
                 select.style.display = 'none';
@@ -411,7 +408,7 @@
         container.appendChild(button);
         container.appendChild(select);
 
-        // Позиционируем контейнер
+
         const commentContainer = commentField.closest('.MuiInputBase-root');
         if (commentContainer) {
             commentContainer.style.position = 'relative';
@@ -421,7 +418,7 @@
         log('Компактная кнопка с выпадающим списком создана');
     };
 
-    // Функция для заполнения данных предложения
+
     const fillOfferData = (bankName) => {
         log(`Заполнение данных для банка: ${bankName}`);
 
@@ -432,14 +429,14 @@
         }
 
         try {
-            // Заполняем комментарий (используем проверенный метод из версии 2.2)
+
             const commentField = document.querySelector('textarea[name="comment"]');
             if (commentField) {
                 setCommentValue(commentField, config.comment);
                 log('Комментарий заполнен');
             }
 
-            // Заполняем отправителя с улучшенным методом
+
             fillSenderField(config.sender);
 
             showStatus(`✅ Данные для ${bankName} заполнены!`, 3000);
@@ -450,29 +447,29 @@
         }
     };
 
-    // Улучшенная функция для заполнения поля отправителя
+
     const fillSenderField = (targetSender) => {
         const senderInput = document.querySelector('input[placeholder="Поиск..."][id*="rh"], input[placeholder="Поиск..."][id*="ri"]');
 
         if (senderInput) {
             log(`Найдено поле отправителя, ищем: ${targetSender}`);
 
-            // Нажимаем на кнопку открытия списка
+
             const popupIndicator = document.querySelector('.MuiAutocomplete-popupIndicator');
             if (popupIndicator) {
                 popupIndicator.click();
                 log('Нажали на кнопку открытия списка');
             }
 
-            // Ждем открытия списка
+
             setTimeout(() => {
-                // Ищем опции в выпадающем списке
+
                 const dropdownOptions = document.querySelectorAll('[role="option"], .MuiAutocomplete-option, li[role="option"]');
                 log(`Найдено опций в списке: ${dropdownOptions.length}`);
 
                 let targetOption = null;
 
-                // Ищем опцию с нужным отправителем
+
                 for (const option of dropdownOptions) {
                     if (option.textContent && option.textContent.includes(targetSender)) {
                         targetOption = option;
@@ -487,13 +484,13 @@
                 } else {
                     log(`Отправитель "${targetSender}" не найден в списке, пробуем ввод текста`);
 
-                    // Вводим текст в поле
+
                     senderInput.focus();
                     setReactInputValue(senderInput, targetSender);
 
                     log(`Введен текст: ${targetSender}`);
 
-                    // Ждем и снова ищем
+
                     setTimeout(() => {
                         const retryOptions = document.querySelectorAll('[role="option"], .MuiAutocomplete-option');
                         let foundOption = null;
@@ -524,7 +521,7 @@
         }
     };
 
-    // Функция показа статуса
+
     const showStatus = (message, duration = 3000) => {
         const existing = document.querySelector('.tm-offer-status');
         if (existing) existing.remove();
@@ -537,7 +534,7 @@
         setTimeout(() => statusEl.remove(), duration);
     };
 
-    // Наблюдатель за изменениями DOM
+
     const initObserver = () => {
         log('Инициализация наблюдателя для автозаполнения предложений');
 
@@ -570,14 +567,14 @@
             subtree: true
         });
 
-        // Первоначальная проверка
+  
         setTimeout(createAutofillButton, 1000);
 
-        // Дополнительная проверка
+
         setTimeout(createAutofillButton, 3000);
     };
 
-    // Запуск скрипта
+
     log('Скрипт автозаполнения предложений запущен');
     initObserver();
 
