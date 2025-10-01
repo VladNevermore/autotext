@@ -7,8 +7,8 @@
 // @author       VladNevermore
 // @icon         https://i.pinimg.com/736x/78/53/ad/7853ade6dd49b8caba4d1037e7341323.jpg
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/VladNevermore/--
-// @downloadURL  https://raw.githubusercontent.com/VladNevermore/--
+// @updateURL    https://raw.githubusercontent.com/VladNevermore/autotext/main/script.user.js
+// @downloadURL  https://raw.githubusercontent.com/VladNevermore/autotext/main/script.user.js
 // ==/UserScript==
 
 (function() {
