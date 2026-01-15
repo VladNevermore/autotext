@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Автотекст
 // @namespace    http://tampermonkey.net/
-// @version      3.0
+// @version      3.1
 // @description  Автотекст
 // @match        https://crm.finleo.ru/crm/orders/*
 // @author       VladNevermore
